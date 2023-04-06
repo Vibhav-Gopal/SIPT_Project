@@ -1,5 +1,6 @@
 //Include I2C library and declare variables
 #include <Wire.h>
+#define e 2.718281828459045
 
 float sound;
 long loopTimer, loopTimer2;
@@ -16,6 +17,7 @@ double freq, dt;
 double tau = 0.98;
 double roll = 0;
 double pitch = 0;
+float NoteNum;
 
 // 250 deg/s --> 131.0, 500 deg/s --> 65.5, 1000 deg/s --> 32.8, 2000 deg/s --> 16.4
 long scaleFactorGyro = 65.5;
@@ -31,6 +33,14 @@ float max(float n1, float n2){
 float min(float n1, float n2){
   if(n1<n2) return n1;
   else return n2;
+}
+
+float ang2hz(float angle){
+  float freq;
+  freq = pow(e,(0.0577621*x));
+  freq*=261.623;
+  freq+=0.00308435;
+  return freq;
 }
 
 void setup() {
@@ -127,8 +137,9 @@ void loop() {
   Serial.print(pitch,1);  Serial.print(",");
   Serial.println(gyroYaw,1);
   gyroYaw = min(max(-75,gyroYaw),75);
-  sound = gyroYaw;
-  sound = map(sound,0,100,6000,1000);
+  gyroYaw += 75 ; //bring it to 0-150
+  NoteNum = (int)gyroYaw/2;
+  sound = ang2hz(NoteNum);
   if(digitalRead(2))tone(7,sound);
   else noTone(7);
 
