@@ -23,6 +23,15 @@ long scaleFactorGyro = 65.5;
 // 2g --> 16384 , 4g --> 8192 , 8g --> 4096, 16g --> 2048
 long scaleFactorAccel = 8192;
 
+float max(float n1, float n2){
+  if (n1>n2) return n1;
+  else return n2;
+}
+
+float min(float n1, float n2){
+  if(n1<n2) return n1;
+  else return n2;
+}
 
 void setup() {
   // Start
@@ -117,6 +126,7 @@ void loop() {
   Serial.print(roll,1);   Serial.print(",");
   Serial.print(pitch,1);  Serial.print(",");
   Serial.println(gyroYaw,1);
+  gyroYaw = min(max(-75,gyroYaw),75);
   sound = gyroYaw;
   sound = map(sound,0,100,6000,1000);
   if(digitalRead(2))tone(7,sound);
